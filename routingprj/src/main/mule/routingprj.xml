@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="6ed39450-6b3a-4306-b273-dadc0ca56e4e" >
-		<db:my-sql-connection host="localhost" port="3306" user="root" password="Rupalpatel1" database="employee" />
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="mypassword" database="employee" />
 	</db:config>
 	<flow name="routingprjFlow" doc:id="e60464a8-6e34-47b4-be3e-d4244553fb0b" >
 		<http:listener doc:name="Listener" doc:id="7527147e-2a25-4670-b587-ca31932e6529" config-ref="HTTP_Listener_config" path="/cbr"/>
