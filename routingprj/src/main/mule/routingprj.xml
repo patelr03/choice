@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7d9572de-ca35-43ba-b8e2-3457b12b59d1" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="6ed39450-6b3a-4306-b273-dadc0ca56e4e" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="Rupalpatel1" database="employee" />
+	</db:config>
+	<flow name="routingprjFlow" doc:id="e60464a8-6e34-47b4-be3e-d4244553fb0b" >
+		<http:listener doc:name="Listener" doc:id="7527147e-2a25-4670-b587-ca31932e6529" config-ref="HTTP_Listener_config" path="/cbr"/>
+		<choice doc:name="Choice" doc:id="33de6277-dea2-42ed-82fb-4add6d3274d0" >
+			<when expression='#[payload.tableName."__text"=="employee"]'>
+				<db:select doc:name="Select" doc:id="84c1e86e-9b34-4c21-b86c-3ab6e85087aa" config-ref="Database_Config">
+					<db:sql >select * from employee</db:sql>
+				</db:select>
+				<ee:transform doc:name="Transform Message" doc:id="3fd68496-8088-48bc-98dd-58732dff7427" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[payload.tableName."__text"=="customer"]'>
+				<db:select doc:name="Select" doc:id="6cf5be40-09ee-4952-b70a-ac4f3092d1b2" config-ref="Database_Config">
+					<db:sql >select * from customer</db:sql>
+				</db:select>
+				<ee:transform doc:name="Transform Message" doc:id="3f8a7ac4-0ca9-4368-b39f-7ef12cad9b1e" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[payload.tableName."__text"=="product"]'>
+				<db:select doc:name="Select" doc:id="5221d0a0-722b-488e-9e9d-393030f3cd9f" config-ref="Database_Config">
+					<db:sql >select * from product</db:sql>
+				</db:select>
+				<ee:transform doc:name="Transform Message" doc:id="b61049ab-c80b-44d8-8ea8-45d00519a201" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[payload.tableName."__text"=="quantity"]'>
+				<db:select doc:name="Select" doc:id="b20e8c1e-f792-4b75-94eb-e62bd5dcd4a5" config-ref="Database_Config">
+					<db:sql >select * from quantity</db:sql>
+				</db:select>
+				<ee:transform doc:name="Transform Message" doc:id="17881fc9-8da7-48dc-adc4-ec38ca59fb6b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<set-payload value="result: not valid choice" doc:name="Set Payload" doc:id="3d2b7477-c248-45c3-9b8a-baa046b524fa" />
+			</otherwise>
+		</choice>
+	</flow>
+</mule>
